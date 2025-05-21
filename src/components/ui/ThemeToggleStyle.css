@@ -1,0 +1,82 @@
+.theme-toggle {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s;
+    color: var(--theme-toggle-color, currentColor);
+  }
+  
+  .theme-toggle:hover {
+    background-color: var(--theme-toggle-hover, #1A2433);
+  }
+  
+  /* Inner container using flex */
+  .sun-moon-wrapper {
+    position: absolute;
+    top: 4px;
+    left: 0;
+    width: 35px;
+    height: 70px; /* Tall enough for both icons */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    /* 6px top and bottom gap */
+    padding: 6px 0;
+    /* Set the rotation pivot.
+       The wrapper's full height is 80px so its center is at 40px.
+       However, the button only shows the top 40px.
+       To swap the icons purely by rotation,
+       we let the icons be arranged so their centers are symmetric around 40px.
+       In our setup:
+         • Sun icon: top at 6px → center at 6+10 = 16px.
+         • Moon icon: bottom gap of 6px → top = 80–6–20 = 54px, center = 54+10 = 64px.
+       With a 180° rotation about the wrapper's center (40px),
+       2×40 – 16 = 64 and 2×40 – 64 = 16, so they swap exactly.
+    */
+    transform-origin: 50% 50%;
+    transition: transform 0.5s ease;
+  }
+  
+  /* Light mode: no rotation */
+  .theme-toggle.light .sun-moon-wrapper {
+    transform: rotate(360deg);
+  }
+  
+  /* Dark mode: rotate 180° */
+  .theme-toggle.dark .sun-moon-wrapper {
+    transform: rotate(180deg);
+  }
+  
+  /* Icon styles: each icon is 20×20px */
+  .sun, .moon {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Optional: prevent any flicker during rotation */
+    backface-visibility: hidden;
+  }
+  .moon {
+    transform: rotate(180deg);
+  }
+  
+  :root.dark {
+    --theme-toggle-color: #a78bfa;  /* Indigo for dark mode - slightly brighter */
+    --theme-toggle-hover: rgba(167, 139, 250, 0.1);  /* Match theme in dark mode */
+  }
+  
+  :root:not(.dark) {
+    --theme-toggle-color: #5D4E35;  /* Earth tone for light mode */
+    --theme-toggle-hover: #E8E3D0;
+  }
+  

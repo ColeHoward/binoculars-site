@@ -1,4 +1,19 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Binoculars - Chrome Extension Landing Page
+
+This is the landing page for the Binoculars Chrome extension, which helps users navigate YouTube videos by searching video transcripts and jumping to specific timestamps.
+
+## Features
+
+- **Modern Design**: Built with Next.js, TypeScript, and Tailwind CSS with the Zinc color theme
+- **Responsive Layout**: Optimized for all device sizes
+- **YouTube Branding**: Uses YouTube red for brand recognition
+- **Shadcn UI Components**: Utilizes shadcn/ui components with the "New York" style
+
+## Extension Features Highlighted
+
+- Search video transcripts to find specific content
+- Jump directly to timestamps in YouTube videos
+- Search across entire playlists of videos
 
 ## Getting Started
 
@@ -14,9 +29,23 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the landing page.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Technologies Used
+
+- **Next.js**: React framework for production
+- **TypeScript**: For type safety
+- **Tailwind CSS**: For styling
+- **Shadcn UI**: For UI components
+- **Vite**: As the build tool
+
+## Customization
+
+The landing page can be customized by editing the following files:
+
+- `src/app/page.tsx`: Main landing page content
+- `src/app/globals.css`: Global styles including YouTube red color variable
+- `src/app/layout.tsx`: Layout and metadata
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
