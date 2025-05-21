@@ -39,3 +39,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+
+src/data/video1.txt
+src/data/video2.txt
+src/data/video3.txt
+src/data/parse_videos.py
+
