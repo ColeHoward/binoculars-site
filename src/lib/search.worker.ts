@@ -108,7 +108,7 @@ function initFuse(segments: TranscriptSegment[] | undefined | null) {
     includeScore: true,
     shouldSort: false,
     minMatchCharLength: 2,
-    threshold: TIER3_THRESHOLD,
+    threshold: TIER2_THRESHOLD,
     distance: 100,
     useExtendedSearch: false,
     ignoreLocation: true,
@@ -142,7 +142,7 @@ function initPlaylistFuse(transcripts: Transcript[] | undefined | null) {
     includeScore:   true,
     shouldSort:     false,
     minMatchCharLength: 2,
-    threshold: TIER1_THRESHOLD, // Playlist might benefit from a stricter initial threshold
+    threshold: TIER1_THRESHOLD,
     distance: 150,
     useExtendedSearch: false,
     ignoreLocation: true,

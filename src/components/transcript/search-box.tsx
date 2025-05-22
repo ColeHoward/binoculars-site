@@ -37,6 +37,7 @@ const SearchBoxComponent = forwardRef<HTMLInputElement, SearchBoxProps>(({
         if (ref && typeof ref !== 'function' && ref.current) {
           ref.current.focus();
         }
+        onSearch(query);
       }, 0);
     }
     
@@ -51,6 +52,7 @@ const SearchBoxComponent = forwardRef<HTMLInputElement, SearchBoxProps>(({
         ref={ref}
         type="text"
         value={query}
+        spellCheck="false"
         onChange={(e) => {
           const newValue = e.target.value;
           setQuery(newValue);

@@ -13,9 +13,16 @@ interface CustomThemeContextType {
 
 const CustomThemeContext = createContext<CustomThemeContextType | undefined>(undefined);
 
+// Reminder: Ensure your main ThemeProvider from 'next-themes' (likely in your layout or app file)
+// is configured with attribute="class" and storageKey="theme" for this to work optimally.
+// e.g., <ThemeProvider attribute="class" defaultTheme="system" storageKey="theme" enableSystem>
+
 export const CustomThemeProvider = ({ children }: { children: ReactNode }) => {
-  const { theme: nextTheme, setTheme: setNextTheme } = useNextTheme();
-  const [currentTheme, setCurrentTheme] = useState<Theme>('light'); // Default to light
+  // The `useNextTheme` hook handles system preference and local storage if `enableSystem` and `storageKey` are set on its Provider.
+  // `resolvedTheme` gives the actual applied theme (light or dark), considering system preference.
+  // `theme` can be 'system', 'light', or 'dark'.
+  const { theme: nextThemeApplied, setTheme: setNextTheme, resolvedTheme } = useNextTheme();
+  const [currentTheme, setCurrentTheme] = useState<Theme>('light'); // Default, will be updated
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -23,15 +30,18 @@ export const CustomThemeProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   useEffect(() => {
-    if (isMounted && nextTheme) {
-      setCurrentTheme(nextTheme as Theme);
+    // This effect now correctly sets the initial theme based on resolvedTheme from next-themes,
+    // which respects localStorage and system preference.
+    if (isMounted && resolvedTheme) {
+      setCurrentTheme(resolvedTheme as Theme);
     }
-  }, [isMounted, nextTheme]);
+  // We also listen to nextThemeApplied to react to changes triggered by next-themes (e.g., system change)
+  }, [isMounted, resolvedTheme, nextThemeApplied]);
 
   const toggleTheme = () => {
     const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-    setCurrentTheme(newTheme);
-    setNextTheme(newTheme); // Still update next-themes for Tailwind and other integrations
+    // setCurrentTheme(newTheme); // This will be updated by the useEffect above when nextThemeApplied changes
+    setNextTheme(newTheme); // This updates next-themes, which then updates localStorage and resolvedTheme
   };
 
   if (!isMounted) {

@@ -114,7 +114,7 @@ export const Newsletter = () => {
                     type="email"
                     name="email"
                     required
-                    placeholder="Your email address"
+                    placeholder="you@example.com"
                     className="flex-grow px-4 py-2 text-sm border border-zinc-300 dark:border-zinc-700 rounded-lg bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-white focus:outline-none 
                     focus:ring-2 focus:ring-[#ff0033] dark:focus:ring-opacity-50"
                     value={email}

@@ -6,25 +6,34 @@ import './ThemeToggleStyle.css'
 import { useCustomTheme } from "@/context/ThemeContext"; // Import the custom hook
 
 export function ThemeToggle() {
-  const { theme, toggleTheme, isMounted } = useCustomTheme(); // Use our custom theme context
-  const [rotation, setRotation] = useState(0);
-  const [initialRotationSet, setInitialRotationSet] = useState(false);
+  const { theme, toggleTheme, isMounted } = useCustomTheme();
+  const [rotation, setRotation] = useState(0); // Initial rotation, will be adjusted by useEffect
 
-
-  // Effect to set the initial rotation based on the theme.
-  // This runs when `mounted` becomes true or when `theme` changes,
-  // but only sets the rotation if it hasn't been set initially yet.
   useEffect(() => {
-    // if (mounted && theme !== undefined && !initialRotationSet) { // Check isMounted from context
-    if (isMounted && theme !== undefined && !initialRotationSet) {
-      setRotation(theme === 'light' ? 180 : 0);
-      setInitialRotationSet(true); // Mark that initial rotation is set.
+    if (isMounted && theme !== undefined) {
+      setRotation(currentRotation => {
+        // Determine the current effective visual state (0 for sun, 180 for moon)
+        // Based on whether currentRotation / 180 is even or odd.
+        const currentEffectiveRotation = (Math.round(currentRotation / 180) % 2) * 180;
+
+        // Determine the target effective visual state based on the current theme
+        const targetEffectiveRotation = theme === 'light' ? 0 : 180;
+
+        if (currentEffectiveRotation === targetEffectiveRotation) {
+          // The visual state already matches the theme, so no rotation needed.
+          // This handles initial render if theme matches initial rotation, or no-op if theme changes but icon is already correct.
+          return currentRotation;
+        } else {
+          // The visual state needs to change. Spin 180 degrees clockwise.
+          return currentRotation + 180;
+        }
+      });
     }
-  }, [isMounted, theme, initialRotationSet]);
+    // Do not add `rotation` to dependencies, as setRotation(updater) handles it.
+  }, [isMounted, theme]);
 
   const handleToggle = () => {
-    toggleTheme();
-    setRotation(prevRotation => prevRotation + 180);
+    toggleTheme(); // This will change the `theme` prop, triggering the useEffect above.
   };
 
   // Avoid hydration mismatch by not rendering until mounted on the client.
@@ -78,10 +87,10 @@ export function ThemeToggle() {
           alignItems: 'center',
           justifyContent: 'center',
           backfaceVisibility: 'hidden',
-          color: 'white !important'
+          color: 'black !important'
         }}>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" className="toggle-svg"
-               stroke={theme === 'dark' ? '#fff' : '#000'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" style={{color: 'black !important'}} className="toggle-svg"
+               stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="100%" height="100%">
             <circle cx="12" cy="12" r="5"></circle>
             <line x1="12" y1="1" x2="12" y2="3"></line>
             <line x1="12" y1="21" x2="12" y2="23"></line>
@@ -101,10 +110,10 @@ export function ThemeToggle() {
           justifyContent: 'center',
           backfaceVisibility: 'hidden',
           transform: 'rotate(180deg)',
-          color: '#ffffff !important',
+          color: 'white !important',
         }}>
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" className="toggle-svg"
-               stroke={theme === 'dark' ? '#fff' : '#000'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+               stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="100%" height="100%">
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
           </svg>
         </div>

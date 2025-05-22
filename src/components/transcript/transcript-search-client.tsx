@@ -39,6 +39,8 @@ interface YouTubePlayer {
   getVideoData: () => { video_id: string };
 }
 
+type SearchCache = Record<string, TranscriptSearchResult[]>;
+
 export function TranscriptSearchClient({ transcripts }: TranscriptSearchClientProps) { // Updated props
   const [selectedTranscriptId, setSelectedTranscriptId] = useState(transcripts[0]?.id || "");
   const [query, setQuery] = useState("");
@@ -46,6 +48,7 @@ export function TranscriptSearchClient({ transcripts }: TranscriptSearchClientPr
   const [results, setResults] = useState<TranscriptSearchResult[]>([]);
   const [searchMode, setSearchMode] = useState<"single" | "playlist">("single");
   const [isSearchUIVisible, setIsSearchUIVisible] = useState(true);
+  const [searchCache, setSearchCache] = useState<SearchCache>({}); // Added search cache state
   const { theme } = useTheme();
   const playerRef = useRef<YouTubePlayer | null>(null);
   const [isPlayerReady, setIsPlayerReady] = useState(false);
@@ -67,9 +70,11 @@ export function TranscriptSearchClient({ transcripts }: TranscriptSearchClientPr
 
   useEffect(() => {
     if (transcripts && transcripts.length > 0) {
-      initWorkerPlaylistFuse(transcripts)
+      initWorkerPlaylistFuse(transcripts);
+      setSearchCache({}); // Invalidate cache when transcripts change
     } else {
-      initWorkerPlaylistFuse(null)
+      initWorkerPlaylistFuse(null);
+      setSearchCache({}); // Clear cache if no transcripts
     }
   }, [transcripts]);
   
@@ -179,6 +184,13 @@ export function TranscriptSearchClient({ transcripts }: TranscriptSearchClientPr
         setIsLoading(false);
         return;
       }
+
+      const cacheKey = `${query}-${searchMode}${searchMode === 'single' ? '-' + selectedTranscript?.id : ''}`;
+      if (searchCache[cacheKey]) {
+        setResults(searchCache[cacheKey]);
+        setIsLoading(false);
+        return;
+      }
       
       setIsLoading(true);
       let rawResults: FuseSearchOutput[] = [];
@@ -195,6 +207,7 @@ export function TranscriptSearchClient({ transcripts }: TranscriptSearchClientPr
         }
         const mappedResults = mapFuseOutputToTranscriptSearchResult(rawResults);
         setResults(mappedResults);
+        setSearchCache(prevCache => ({ ...prevCache, [cacheKey]: mappedResults })); // Store in cache
       } catch (error) {
         console.error("Error during worker search:", error);
         setResults([]); 
@@ -204,7 +217,7 @@ export function TranscriptSearchClient({ transcripts }: TranscriptSearchClientPr
     };
 
     performSearch();
-  }, [query, searchMode, selectedTranscript, mapFuseOutputToTranscriptSearchResult]); 
+  }, [query, searchMode, selectedTranscript, mapFuseOutputToTranscriptSearchResult, searchCache]); 
 
   const handleSearchInputChange = useCallback((newQuery: string) => {
     setQuery(newQuery);
@@ -226,8 +239,8 @@ export function TranscriptSearchClient({ transcripts }: TranscriptSearchClientPr
       const newMode = prevMode === "single" ? "playlist" : "single";
       return newMode;
     });
-    setQuery(""); 
-    setResults([]);
+    // setQuery(""); // Removed: Query should persist on mode toggle
+    // setResults([]); // Removed: Results will be handled by performSearch
     
     setTimeout(() => {
       if (wasSearchInputFocused && searchInputRef.current) {
