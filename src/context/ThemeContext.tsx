@@ -8,7 +8,7 @@ type Theme = 'light' | 'dark';
 interface CustomThemeContextType {
   theme: Theme;
   toggleTheme: () => void;
-  isMounted: boolean; // To handle hydration mismatch
+  isMounted: boolean;
 }
 
 const CustomThemeContext = createContext<CustomThemeContextType | undefined>(undefined);

@@ -1,7 +1,6 @@
 "use client"
 
 import Image from "next/image";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 export function Footer() {
   return (

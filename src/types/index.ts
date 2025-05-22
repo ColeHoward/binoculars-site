@@ -1,5 +1,3 @@
-import type { FuseResultMatch } from 'fuse.js';
-
 export type Transcript = {
   id: string;
   title: string;

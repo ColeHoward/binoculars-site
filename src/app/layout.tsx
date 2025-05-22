@@ -4,6 +4,8 @@ import { Roboto } from "next/font/google"; // Import Roboto
 import "./globals.css";
 import { ThemeProvider as NextThemesProvider } from "@/components/theme-provider"; // Alias for clarity
 import { CustomThemeProvider } from "@/context/ThemeContext"; // Import our CustomThemeProvider
+import { Analytics } from '@vercel/analytics/next';
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,10 +19,10 @@ const geistMono = Geist_Mono({
 
 // Configure Roboto
 const roboto = Roboto({
-  weight: ["400", "500", "700"], // Specify weights you need
+  weight: ["400", "500", "700"], 
   subsets: ["latin"],
   display: "swap", // Good for performance
-  variable: "--font-roboto", // This will create a CSS variable
+  variable: "--font-roboto", 
 });
 
 export const metadata: Metadata = {
@@ -50,6 +52,7 @@ export default function RootLayout({
           </CustomThemeProvider>
         </NextThemesProvider>
       </body>
+      <Analytics />
     </html>
   );
 }

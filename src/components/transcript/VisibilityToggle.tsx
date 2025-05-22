@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { cn } from "@/lib/utils";
 import { useTheme } from "next-themes";
 
 interface VisibilityToggleProps {
@@ -10,21 +9,21 @@ interface VisibilityToggleProps {
   className?: string;
 }
 
-export function VisibilityToggle({ isVisible, onToggle, className }: VisibilityToggleProps) {
+export function VisibilityToggle({ isVisible, onToggle }: VisibilityToggleProps) {
   const svgColor = isVisible ? "#cd201f" : "currentColor";
   const { theme } = useTheme();
 
   return (
     <button
       onClick={onToggle}
-      className={"cursor-pointer py-2 px-4 rounded-full hover:bg-white/10 dark:hover:bg-white/10 dark:bg-[rgba(255,255,255,0.1)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"}
+      className={"cursor-pointer mt-2 py-2 px-4 rounded-full hover:bg-white/10 dark:hover:bg-white/10 dark:bg-[rgba(255,255,255,0.1)] focus:ring-0 focus:ring-offset-0"}
       style={{ backgroundColor: theme === "dark" ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.05)" }}
       title="Toggle Binoculars Search"
       aria-label="Toggle Binoculars Search Panel"
     >
       <div className="yt-spec-button-shape-next__icon flex items-center justify-between"> {/* YouTube's icon container class */}
         <svg
-          style={{ color: svgColor, marginRight: "8px" }}
+          style={{ color: svgColor, marginRight: window.innerWidth < 768 ? "0px" : "8px" }}
           viewBox="0 0 24 24"
           width="22"
           height="22"
@@ -100,7 +99,7 @@ export function VisibilityToggle({ isVisible, onToggle, className }: VisibilityT
             style={{ strokeWidth: "0.06362" }}
           />
         </svg>
-        <p style={{ fontSize: "16px", fontWeight: "bold", fontFamily: "var(--font-roboto)" }}>Binoculars</p>
+        {window.innerWidth >= 768 && <p style={{ fontSize: "16px", fontWeight: "bold", fontFamily: "var(--font-roboto)" }}> Binoculars</p>}
       </div>
     </button>
   );

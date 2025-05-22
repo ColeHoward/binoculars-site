@@ -10,7 +10,6 @@ import { PlaylistGroup } from "./playlist-group";
 interface SearchResultsProps {
   results: TranscriptSearchResult[];
   videoId: string;
-  isLoading?: boolean;
   query: string;
   isPlaylistSearch?: boolean;
   onPlayVideoSegment: (videoId: string, timestamp: number) => void;
@@ -19,7 +18,6 @@ interface SearchResultsProps {
 export function SearchResults({ 
   results, 
   videoId, 
-  isLoading = false,
   query,
   isPlaylistSearch = false,
   onPlayVideoSegment
@@ -33,14 +31,6 @@ export function SearchResults({
   // Refs for scrolling
   const containerRef = useRef<HTMLDivElement>(null);
   const resultRefs = useRef<(HTMLDivElement | null)[]>([]);
-
-  // Memoized loading message
-  const loadingMessage = useMemo(() => {
-    return {
-      title: isPlaylistSearch ? "Loading playlist" : "Loading transcript",
-      subtitle: isPlaylistSearch ? "" : "Please wait a moment…"
-    };
-  }, [isPlaylistSearch]);
 
   // Helper function to toggle group collapse
   const toggleGroupCollapse = (groupVideoId: string) => {
@@ -189,7 +179,6 @@ export function SearchResults({
               results={results}
               setSelectedIndex={setSelectedIndex}
               selectedIndex={selectedIndex}
-              queryLength={query.length}
               onPlayVideoSegment={onPlayVideoSegment}
             />
           ) : (
@@ -218,7 +207,6 @@ export function SearchResults({
                     }}
                     score={score}
                     isPlaylistSearch={false}
-                    queryLength={query.length}
                     matches={result.matchIndices ? [...result.matchIndices.map(m => [m[0], m[1]] as [number, number])] : []}
                   />
                 </div>

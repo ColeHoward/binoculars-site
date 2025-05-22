@@ -2,7 +2,7 @@
 
 import { Transcript } from "@/types";
 import { cn } from "@/lib/utils";
-import { CheckCircle, ListVideo, Music2 } from "lucide-react";
+import { CheckCircle, ListVideo } from "lucide-react";
 import Image from "next/image";
 import { useTheme } from "next-themes";
 
@@ -15,8 +15,6 @@ function timeSince(date: string) {
   const diffWeeks = Math.ceil(diffDays / 7);
   const diffMonths = Math.ceil(diffDays / 30);
   const diffYears = Math.ceil(diffDays / 365);
-
-  console.log(diffYears, diffMonths, diffWeeks, diffDays)
 
   if (diffYears > 1) {
     return `${diffYears} years`;
@@ -43,7 +41,6 @@ export function PlaylistSidebar({
   className,
 }: PlaylistSidebarProps) {
   const { theme } = useTheme();
-  const selectedIndex = transcripts.findIndex(t => t.id === selectedTranscriptId);
   
   return (
     <div className={cn("w-full mt-4 h-full flex flex-col overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-700 overflow-hidden h-[335px]", className)}>
@@ -65,11 +62,11 @@ export function PlaylistSidebar({
             key={transcript.id}
             onClick={() => onSelect(transcript.id)}
             className={cn(
-              "flex p-2 cursor-pointer transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800",
-              selectedTranscriptId === transcript.id ? "!bg-zinc-500 dark:bg-white/10" : ""
+              "flex p-2 cursor-pointer transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 !h-[33.33%]",
             )}
             style={{
-              backgroundColor: selectedTranscriptId === transcript.id ? theme === 'dark' ? 'rgba(51,40,35,0.95)' : 'rgba(235,226,221,0.95)' : 'transparent'
+              backgroundColor: selectedTranscriptId === transcript.id ? theme === 'dark' ? 'rgba(51,40,35,0.95)' : 'rgba(235,226,221,0.95)' : 'transparent',
+              height: '33.33%'
             }}
           >
             {/* Thumbnail with video index */}
@@ -102,7 +99,7 @@ export function PlaylistSidebar({
             
             {/* Video details - removed date info to reduce clutter */}
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium line-clamp-2 mb-0.5">
+              <p className="text-xs sm:text-sm font-medium line-clamp-2 mb-0.5">
                 {transcript.title}
               </p>
               <p className="text-xs text-zinc-500 dark:text-zinc-400 flex items-center">

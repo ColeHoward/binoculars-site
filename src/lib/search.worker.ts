@@ -96,7 +96,6 @@ let playlistFuseInstance: Fuse<PlaylistSearchSegment> | null = null;
 function initFuse(segments: TranscriptSegment[] | undefined | null) {
   if (!segments) {
     fuseInstance = null;
-    console.log("Worker: Fuse instance cleared.");
     return;
   }
   const processedSegments = segments.map(seg => ({
@@ -118,13 +117,11 @@ function initFuse(segments: TranscriptSegment[] | undefined | null) {
     findAllMatches: true,
     ignoreFieldNorm: true,
   });
-  console.log("Worker: Single video Fuse initialized with", processedSegments.length, "segments.");
 }
 
 function initPlaylistFuse(transcripts: Transcript[] | undefined | null) {
   if (!transcripts) {
     playlistFuseInstance = null;
-    console.log("Worker: Playlist Fuse instance cleared.");
     return;
   }
   const allSegments: PlaylistSearchSegment[] = transcripts.flatMap(
@@ -154,7 +151,6 @@ function initPlaylistFuse(transcripts: Transcript[] | undefined | null) {
     findAllMatches:  true,
     ignoreFieldNorm: true,
   });
-  console.log("Worker: Playlist Fuse initialized with", allSegments.length, "total segments.");
 }
 
 // ----------------------------

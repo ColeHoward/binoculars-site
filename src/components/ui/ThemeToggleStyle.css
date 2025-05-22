@@ -14,9 +14,6 @@
     color: var(--theme-toggle-color, currentColor);
   }
   
-  .theme-toggle:hover {
-    background-color: var(--theme-toggle-hover, #1A2433);
-  }
   
   /* Inner container using flex */
   .sun-moon-wrapper {
@@ -70,13 +67,4 @@
     transform: rotate(180deg);
   }
   
-  :root.dark {
-    --theme-toggle-color: #a78bfa;  /* Indigo for dark mode - slightly brighter */
-    --theme-toggle-hover: rgba(167, 139, 250, 0.1);  /* Match theme in dark mode */
-  }
-  
-  :root:not(.dark) {
-    --theme-toggle-color: #5D4E35;  /* Earth tone for light mode */
-    --theme-toggle-hover: #E8E3D0;
-  }
   

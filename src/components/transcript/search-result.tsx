@@ -8,11 +8,6 @@ import { formatTimestamp } from "@/lib/utils";
 const TIER1_THRESHOLD = 0.75;
 const TIER2_THRESHOLD = 0.5;
 
-// Constants for matching thresholds similar to the extension
-const TIER1_MATCH_THRESHOLD = 0.05;
-const TIER2_MATCH_THRESHOLD = 0.2;
-const TIER3_MATCH_THRESHOLD = 0.3;
-
 interface SearchResultProps {
   text: string;
   timestamp: number;
@@ -22,7 +17,6 @@ interface SearchResultProps {
   onClick: () => void;
   score?: number;
   isPlaylistSearch?: boolean;
-  queryLength: number;
   videoTitle?: string;
   videoId?: string;
 }
@@ -36,9 +30,6 @@ export function SearchResult({
   onClick,
   score = 50,
   isPlaylistSearch = false,
-  queryLength,
-  videoTitle,
-  videoId,
 }: SearchResultProps) {
   const resultRef = useRef<HTMLDivElement>(null);
   const isSelected = index === selectedIndex;

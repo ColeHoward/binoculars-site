@@ -1,7 +1,7 @@
 // ... existing clsx, twMerge imports ...
 // import Fuse, { FuseResult } from "fuse.js";
 // import type { FuseResultMatch } from 'fuse.js'; // Keep for now, might remove if not directly used by components
-import { Transcript, TranscriptSegment, TranscriptSearchResult } from "@/types"; // Ensure App's Transcript types are used
+import { Transcript, TranscriptSegment } from "@/types"; // Ensure App's Transcript types are used
 import type { ClassValue } from "clsx";
 import clsx from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -66,7 +66,7 @@ export function decodeHtmlEntities(s: string): string {
 let searchWorker: Worker | null = null;
 let workerInitializationPromise: Promise<void> | null = null;
 let currentRequestId = 0;
-const activeRequests = new Map<string, (value: any) => void>();
+const activeRequests = new Map<string, (value: unknown) => void>();
 
 
 function getSearchWorker(): Worker {
@@ -77,11 +77,9 @@ function getSearchWorker(): Worker {
     workerInitializationPromise = new Promise((resolve, reject) => {
       searchWorker!.onmessage = (event: MessageEvent) => {
         // Destructure including the requestId directly from event.data
-        const { type, payload, requestId, error, mode } = event.data; // mode might be on event.data directly for 'initialized'
-        // console.log("[Main Thread] Received from worker:", event.data); // Helpful for debugging
+        const { type, payload, requestId, error } = event.data; // mode might be on event.data directly for 'initialized'
 
         if (type === 'workerReady') {
-          console.log("Search worker is ready.");
           resolve(); // Resolves workerInitializationPromise
           return;
         }
@@ -93,7 +91,6 @@ function getSearchWorker(): Worker {
         }
 
         if (type === 'initialized') {
-          console.log(`Search worker initialized for ${mode} mode (request: ${requestId}).`);
           if (activeRequests.has(requestId)) {
             activeRequests.get(requestId)!(payload); // payload for init might be minimal (e.g., {success: true} or undefined)
             activeRequests.delete(requestId);
@@ -152,7 +149,7 @@ async function ensureWorkerInitialized(): Promise<void> {
 }
 
 // Function to post a message and return a promise that resolves with the worker's response
-function postMessageToWorker<T>(type: string, payload: any, uniqueQuery?: string): Promise<T> {
+function postMessageToWorker<T>(type: string, payload: Record<string, unknown>, uniqueQuery?: string): Promise<T> {
   return new Promise(async (resolve, reject) => {
     try {
       await ensureWorkerInitialized(); // Make sure worker is ready before posting
@@ -162,7 +159,7 @@ function postMessageToWorker<T>(type: string, payload: any, uniqueQuery?: string
       // If a uniqueQuery is provided (like the actual search term), use it to make the ID more robust
       // against multiple identical 'type' requests.
       const requestId = uniqueQuery ? `${type}-${uniqueQuery}-${++currentRequestId}` : `${type}-${++currentRequestId}`;
-      activeRequests.set(requestId, resolve as (value: any) => void);
+      activeRequests.set(requestId, resolve as (value: unknown) => void);
 
       worker.postMessage({ type, payload: { ...payload, requestId } });
     } catch (error) {
@@ -175,22 +172,18 @@ function postMessageToWorker<T>(type: string, payload: any, uniqueQuery?: string
 
 export async function initWorkerFuse(segments: TranscriptSegment[] | undefined | null): Promise<void> {
   if (!segments || segments.length === 0) {
-    console.log("Main: No segments to initialize worker with.");
     // Optionally, tell the worker to clear its instance if it was previously initialized
     // This depends on whether an empty init should clear or be a no-op
     // await postMessageToWorker<void>('init', { segments: null });
     return Promise.resolve();
   }
-  console.log("Main: Requesting worker to initialize Fuse with", segments.length, "segments.");
   return postMessageToWorker<void>('init', { segments }, 'single');
 }
 
 export async function initWorkerPlaylistFuse(transcripts: Transcript[] | undefined | null): Promise<void> {
   if (!transcripts || transcripts.length === 0) {
-    console.log("Main: No transcripts to initialize playlist worker with.");
     return Promise.resolve();
   }
-  console.log("Main: Requesting worker to initialize Playlist Fuse with", transcripts.length, "transcripts.");
   return postMessageToWorker<void>('initPlaylist', { transcripts }, 'playlist');
 }
 
@@ -199,7 +192,6 @@ export async function searchWithWorker(query: string): Promise<FuseSearchOutput[
   if (!query.trim()) {
     return [];
   }
-  console.log('Main: Sending search query to worker: "' + query + '"\n');
   return postMessageToWorker<FuseSearchOutput[]>('searchSingle', { query }, query);
 }
 
@@ -207,7 +199,6 @@ export async function searchPlaylistWithWorker(query: string): Promise<FuseSearc
   if (!query.trim()) {
     return [];
   }
-  console.log('Main: Sending playlist search query to worker: "' + query + '"\n');
   // Ensure a unique request ID by appending the query itself and a counter
   return postMessageToWorker<FuseSearchOutput[]>('searchPlaylist', { query }, query);
 }

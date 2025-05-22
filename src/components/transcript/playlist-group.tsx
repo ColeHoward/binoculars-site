@@ -1,9 +1,8 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { TranscriptSearchResult } from "@/types";
-import { formatTimestamp } from "@/lib/utils";
 import { Play, ChevronDown } from "lucide-react";
 import { SearchResult } from "./search-result";
 
@@ -16,21 +15,7 @@ interface PlaylistGroupProps {
   results: TranscriptSearchResult[];
   setSelectedIndex: (index: number) => void;
   selectedIndex: number;
-  queryLength: number;
   onPlayVideoSegment: (actualVideoId: string, timestamp: number) => void;
-}
-
-/* ––––––––– helper to produce ISO timestamp → `M:SS` or `H:MM:SS` ––––––– */
-const toClock = (sec: number) => {
-  const iso = new Date(sec * 1000).toISOString().slice(11, 19);
-  return parseInt(iso.slice(0, 2)) ? iso : iso.slice(3);
-};
-
-// Simulated functionality for the demo version
-export function findPlaylistAnchor(videoId: string): HTMLAnchorElement | null {
-  // In a real extension, this would search for actual YouTube playlist items
-  // For our demo, we'll just return null to simulate fallback behavior
-  return null;
 }
 
 export function jumpWithinPlaylist(videoId: string, seconds: number) {
@@ -48,7 +33,6 @@ export function PlaylistGroup({
   results,
   setSelectedIndex,
   selectedIndex,
-  queryLength,
   onPlayVideoSegment
 }: PlaylistGroupProps) {
   const [boxShadow, setBoxShadow] = useState("0 1px 2px rgba(0,0,0,0.03)");
@@ -198,7 +182,6 @@ export function PlaylistGroup({
                 selectedIndex={selectedIndex}
                 matches={result.matchIndices || []}
                 score={score}
-                queryLength={queryLength}
                 isPlaylistSearch={true}
                 videoTitle={sourceVideoTitle}
                 videoId={result.actualVideoId}

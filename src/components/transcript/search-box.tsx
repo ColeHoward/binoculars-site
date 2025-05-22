@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef, memo, forwardRef } from "react";
+import { useState, useEffect, memo, forwardRef } from "react";
 import { cn } from "@/lib/utils";
 
 interface SearchBoxProps {

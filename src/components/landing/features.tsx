@@ -1,5 +1,3 @@
-"use client"
-
 export function Features() {
   return (
     <section className="py-16 md:py-24 bg-white dark:bg-zinc-800">
@@ -15,7 +13,7 @@ export function Features() {
             </div>
             <h3 className="text-xl font-semibold mb-3">Transcript Search</h3>
             <p className="text-zinc-600 dark:text-zinc-300">
-              Instantly search through the entire transcript of any YouTube video to find exactly what you're looking for.
+              Instantly search through the entire transcript of any YouTube video to find exactly what you&apos;re looking for.
             </p>
           </div>
           

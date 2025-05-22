@@ -1,22 +1,15 @@
 "use client"
 
 import * as React from "react"
-// import { useTheme } from "next-themes" // No longer directly using next-themes here
 import { useState, useEffect } from "react"
 import './ThemeToggleStyle.css'
 import { useCustomTheme } from "@/context/ThemeContext"; // Import the custom hook
 
 export function ThemeToggle() {
-  // const { theme, setTheme } = useTheme() // Replaced by useCustomTheme
   const { theme, toggleTheme, isMounted } = useCustomTheme(); // Use our custom theme context
   const [rotation, setRotation] = useState(0);
-  // const [mounted, setMounted] = useState(false); // isMounted comes from context now
   const [initialRotationSet, setInitialRotationSet] = useState(false);
 
-  // Effect to mark the component as mounted once on the client.
-  // useEffect(() => {
-  //   setMounted(true);
-  // }, []); // Empty dependency array ensures this runs once on mount. // Handled by context
 
   // Effect to set the initial rotation based on the theme.
   // This runs when `mounted` becomes true or when `theme` changes,
@@ -24,19 +17,17 @@ export function ThemeToggle() {
   useEffect(() => {
     // if (mounted && theme !== undefined && !initialRotationSet) { // Check isMounted from context
     if (isMounted && theme !== undefined && !initialRotationSet) {
-      setRotation(theme === 'dark' ? 180 : 0);
+      setRotation(theme === 'light' ? 180 : 0);
       setInitialRotationSet(true); // Mark that initial rotation is set.
     }
   }, [isMounted, theme, initialRotationSet]);
 
   const handleToggle = () => {
-    // setTheme(theme === "light" ? "dark" : "light"); // Use toggleTheme from context
     toggleTheme();
     setRotation(prevRotation => prevRotation + 180);
   };
 
   // Avoid hydration mismatch by not rendering until mounted on the client.
-  // if (!mounted) { // Check isMounted from context
   if (!isMounted) {
     return null;
   }
@@ -87,7 +78,7 @@ export function ThemeToggle() {
           alignItems: 'center',
           justifyContent: 'center',
           backfaceVisibility: 'hidden',
-          color: '#000'
+          color: 'white !important'
         }}>
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" className="toggle-svg"
                stroke={theme === 'dark' ? '#fff' : '#000'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -110,7 +101,7 @@ export function ThemeToggle() {
           justifyContent: 'center',
           backfaceVisibility: 'hidden',
           transform: 'rotate(180deg)',
-          color: '#fff',
+          color: '#ffffff !important',
         }}>
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" className="toggle-svg"
                stroke={theme === 'dark' ? '#fff' : '#000'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
