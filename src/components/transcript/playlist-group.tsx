@@ -16,6 +16,7 @@ interface PlaylistGroupProps {
   setSelectedIndex: (index: number) => void;
   selectedIndex: number;
   onPlayVideoSegment: (actualVideoId: string, timestamp: number) => void;
+  registerResultRef: (index: number, element: HTMLDivElement | null) => void;
 }
 
 export function jumpWithinPlaylist(videoId: string, seconds: number) {
@@ -33,7 +34,8 @@ export function PlaylistGroup({
   results,
   setSelectedIndex,
   selectedIndex,
-  onPlayVideoSegment
+  onPlayVideoSegment,
+  registerResultRef
 }: PlaylistGroupProps) {
   const [boxShadow, setBoxShadow] = useState("0 1px 2px rgba(0,0,0,0.03)");
   const [borderLeftColor, setBorderLeftColor] = useState("transparent");
@@ -41,9 +43,6 @@ export function PlaylistGroup({
   // Helper for checking dark mode
   const isDark = () => document.documentElement.classList.contains("dark");
   
-  // References for row elements
-  const rowRefs = useRef<(HTMLDivElement | null)[]>([]);
-
   // Determine the actual YouTube video ID and title for this group from the first row.
   // All rows in this group should share the same sourceVideoTitle and actualVideoId.
   const sourceVideoTitle = rows[0]?.sourceVideoTitle || `Video ${videoId}`;
@@ -172,7 +171,7 @@ export function PlaylistGroup({
           return (
             <div
               key={`${result.sourceVideoId}-${result.segment.start}-${localIdx}`}
-              ref={(el) => { rowRefs.current[localIdx] = el; }}
+              ref={(el) => { registerResultRef(globalIdx, el); }}
               className="relative mb-0.5"
             >
               <SearchResult

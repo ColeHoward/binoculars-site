@@ -4,7 +4,7 @@ import type { Transcript, TranscriptSegment } from "@/types"; // Ensure App's Tr
 // ───────────────────────  CONSTANTS ───────────────────────
 const TIER1_THRESHOLD = 0.05; // Most relevant
 const TIER2_THRESHOLD = 0.2;
-const TIER3_THRESHOLD = 0.3;  // Least relevant, but still a match
+// const TIER3_THRESHOLD = 0.3;  // Least relevant, but still a match
 const RENDER_DOWN: boolean = true; // Direction for timestamp sorting
 
 // ───────────────────────── TYPES FOR FUSE SEARCH ──────────────────────────

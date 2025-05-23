@@ -122,16 +122,14 @@ export function SearchResult({
       className={cn(
         "rounded-md cursor-pointer text-sm leading-[1.4] break-words border-l-2 font-sans flex flex-col",
         isPlaylistSearch ? "my-0.5 py-0.5" : "my-1",
-        isDark() ? "bg-transparent" : "bg-white",
-        isSelected ? "bg-white/10 dark:bg-white/10" : "",
-        !isSelected && isDark() ? "hover:bg-zinc-800" : "hover:bg-black/10"
       )}
       style={{
         borderLeftColor: borderColor,
         borderRightColor: 'transparent',
         borderTopColor: 'transparent',
         borderBottomColor: 'transparent',
-        fontFamily: "'Inter', 'Roboto', 'Arial', sans-serif"
+        fontFamily: "'Inter', 'Roboto', 'Arial', sans-serif",
+        backgroundColor: isDark() ? (isSelected ? "rgba(255, 255, 255, 0.1)" : "transparent") : (isSelected ? "rgba(0, 0, 0, 0.1)" : "transparent")
       }}
     >
       <div 

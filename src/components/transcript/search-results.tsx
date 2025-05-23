@@ -32,6 +32,16 @@ export function SearchResults({
   const containerRef = useRef<HTMLDivElement>(null);
   const resultRefs = useRef<(HTMLDivElement | null)[]>([]);
 
+  // Effect to reset refs when results change
+  useEffect(() => {
+    resultRefs.current = []; // Reset when results change to ensure fresh refs
+  }, [results]);
+
+  // Helper function to register a result ref
+  const registerResultRef = (index: number, element: HTMLDivElement | null) => {
+    resultRefs.current[index] = element;
+  };
+
   // Helper function to toggle group collapse
   const toggleGroupCollapse = (groupVideoId: string) => {
     setCollapsedGroups(prev => ({
@@ -69,6 +79,7 @@ export function SearchResults({
     if (containerRef.current && results.length) {
       containerRef.current.scrollTop = 0;
     }
+    setSelectedIndex(-1); // Reset selectedIndex when results change
   }, [results]);
 
   // Effect to scroll selected item into view
@@ -96,15 +107,27 @@ export function SearchResults({
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (results.length === 0) return;
-      
-      if (e.key === 'ArrowDown') {
+
+      // go up
+      if (e.shiftKey && e.key === "Tab") {
         e.preventDefault();
         setSelectedIndex(prev => 
-          prev < results.length - 1 ? prev + 1 : prev
+          prev > 0 ? prev - 1 : results.length - 1 // Loop to last
+        );
+        return 
+
+      }
+      
+      if (e.key === 'ArrowDown' || e.key === "Tab") {
+        e.preventDefault();
+        setSelectedIndex(prev => 
+          prev < results.length - 1 ? prev + 1 : 0 // Loop to first
         );
       } else if (e.key === 'ArrowUp') {
         e.preventDefault();
-        setSelectedIndex(prev => prev > 0 ? prev - 1 : prev);
+        setSelectedIndex(prev => 
+          prev > 0 ? prev - 1 : results.length - 1 // Loop to last
+        );
       } else if (e.key === 'Enter' && selectedIndex !== -1 && results[selectedIndex]) {
         e.preventDefault();
         const resultData = results[selectedIndex];
@@ -180,6 +203,7 @@ export function SearchResults({
               setSelectedIndex={setSelectedIndex}
               selectedIndex={selectedIndex}
               onPlayVideoSegment={onPlayVideoSegment}
+              registerResultRef={registerResultRef}
             />
           ) : (
             groupResults.map((result, index) => {
